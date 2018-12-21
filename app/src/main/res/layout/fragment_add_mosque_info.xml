@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/button_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="sendMosqueInfo"
+        android:text="Send"
+        tools:layout_editor_absoluteX="148dp"
+        tools:layout_editor_absoluteY="386dp"
+        tools:ignore="MissingConstraints" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButton_getlocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="getLocation"
+        app:srcCompat="@android:drawable/ic_menu_mylocation"
+        tools:layout_editor_absoluteX="289dp"
+        tools:layout_editor_absoluteY="189dp"
+        tools:ignore="MissingConstraints" />
+
+    <EditText
+        android:id="@+id/editText_hintforpresslocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="text"
+        android:text="press it  to get location"
+        tools:layout_editor_absoluteX="50dp"
+        tools:layout_editor_absoluteY="189dp"
+        tools:ignore="MissingConstraints" />
+
+    <EditText
+        android:id="@+id/editText_keeperphone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="type mosque keeper phone Num."
+        android:inputType="phone"
+        tools:layout_editor_absoluteX="50dp"
+        tools:layout_editor_absoluteY="114dp"
+        tools:ignore="MissingConstraints" />
+
+    <EditText
+        android:id="@+id/editText_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="type mosque name"
+        android:inputType="textPersonName"
+        tools:layout_editor_absoluteX="50dp"
+        tools:layout_editor_absoluteY="50dp"
+        tools:ignore="MissingConstraints" />
+
+    <EditText
+        android:id="@+id/editText_loc_boundaries"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:visibility="invisible"
+        tools:layout_editor_absoluteX="50dp"
+        tools:layout_editor_absoluteY="253dp"
+        tools:ignore="MissingConstraints" />
+
+</android.support.constraint.ConstraintLayout>

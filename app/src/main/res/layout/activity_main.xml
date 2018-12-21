@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:background="@android:color/holo_blue_bright"
+    android:backgroundTint="@android:color/black">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,6 +14,36 @@
         android:orientation="vertical">
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView_mosqueHere"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="132dp"
+        android:clickable="true"
+        android:elevation="14dp"
+        android:onClick="addMosque"
+        android:text="WANNA ADD MOSQUE HERE!"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@android:color/background_light"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_addInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="34dp"
+        android:onClick="updateMosqueInfo"
+        android:text="update mosque info"
+        android:textColor="@android:color/background_light"
+        android:textSize="24sp"
+        android:textStyle="italic"
+        android:visibility="invisible" />
 
 
 </RelativeLayout>

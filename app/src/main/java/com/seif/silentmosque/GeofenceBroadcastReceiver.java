@@ -61,6 +61,7 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
      * @param transitionType The geofence transition type, can be Geofence.GEOFENCE_TRANSITION_ENTER
      *                       or Geofence.GEOFENCE_TRANSITION_EXIT
      */
+
     private void sendNotification(Context context, int transitionType) {
         // Create an explicit content Intent that starts the main Activity.
         Intent notificationIntent = new Intent(context, MainActivity.class);

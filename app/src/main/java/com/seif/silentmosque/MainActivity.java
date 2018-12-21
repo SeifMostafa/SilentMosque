@@ -1,42 +1,34 @@
 package com.seif.silentmosque;
 
-import android.app.Activity;
-import android.app.NotificationManager;
-import android.content.ContentValues;
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
+import android.location.Location;
+import android.location.LocationManager;
+import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import com.seif.silentmosque.provider.PlaceContract;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -46,50 +38,35 @@ public class MainActivity extends AppCompatActivity implements
     public static final String TAG = MainActivity.class.getSimpleName();
     private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 111;
     private static final int PLACE_PICKER_REQUEST = 1;
+    private static final int AREA_AROUND_IN_METERS = 5000;
+    private static final long LOCATION_REFRESH_TIME = 5000;
+    private static final float LOCATION_REFRESH_DISTANCE = 5.0f;
+    private static final int PERMISSIONS_MULTIPLE_REQUEST = 12;
+    private final LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(final Location location) {
+            //your code here
+            Log.i("mLocLsnr:onLocChanged", location.getLongitude() + "," + location.getLatitude());
+        }
+    };
+    LocationManager mLocationManager;
+    AudioManager mAudioManager;
 
-    // Member variables
-    private PlaceListAdapter mAdapter;
-    private RecyclerView mRecyclerView;
-    private boolean mIsEnabled;
     private GoogleApiClient mClient;
-    private Geofencing mGeofencing;
 
-    /**
-     * Called when the activity is starting
-     *
-     * @param savedInstanceState The Bundle that contains the data supplied in onSaveInstanceState
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.i("MainActivity","onCreate");
-        // Set up the recycler view
-        mRecyclerView = (RecyclerView) findViewById(R.id.places_list_recycler_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new PlaceListAdapter(this, null);
-        mRecyclerView.setAdapter(mAdapter);
+        checkAndroidVersion();
+        Log.i("MainActivity", "onCreate");
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_WIFI_STATE) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
 
-        // Initialize the switch state and Handle enable/disable switch change
-        Switch onOffSwitch = (Switch) findViewById(R.id.enable_switch);
-        mIsEnabled = getPreferences(MODE_PRIVATE).getBoolean(getString(R.string.setting_enabled), false);
-        onOffSwitch.setChecked(mIsEnabled);
-        onOffSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
-                editor.putBoolean(getString(R.string.setting_enabled), isChecked);
-                mIsEnabled = isChecked;
-                editor.commit();
-                if (isChecked) mGeofencing.registerAllGeofences();
-                else mGeofencing.unRegisterAllGeofences();
-            }
-
-        });
-
-        // Build up the LocationServices API client
-        // Uses the addApi method to request the LocationServices API
-        // Also uses enableAutoManage to automatically when to connect/suspend the client
+            return;
+        }
         mClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -97,8 +74,15 @@ public class MainActivity extends AppCompatActivity implements
                 .addApi(Places.GEO_DATA_API)
                 .enableAutoManage(this, this)
                 .build();
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        mGeofencing = new Geofencing(this, mClient);
+
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
+                LOCATION_REFRESH_DISTANCE, (android.location.LocationListener) mLocationListener);
+
+        mAudioManager= (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
+
+        //  mGeofencing = new Geofencing(this, mClient);
 
     }
 
@@ -134,29 +118,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void refreshPlacesData() {
-//        Uri uri = PlaceContract.PlaceEntry.CONTENT_URI;
-//        Cursor data = getContentResolver().query(
-//                uri,
-//                null,
-//                null,
-//                null,
-//                null);
-//
-//        if (data == null || data.getCount() == 0) return;
-//        List<String> guids = new ArrayList<String>();
-//        while (data.moveToNext()) {
-//            guids.add(data.getString(data.getColumnIndex(PlaceContract.PlaceEntry.COLUMN_PLACE_ID)));
-//        }
-//        PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mClient,
-//                guids.toArray(new String[guids.size()]));
-//        placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
-//            @Override
-//            public void onResult(@NonNull PlaceBuffer places) {
-//                mAdapter.swapPlaces(places);
-//                mGeofencing.updateGeofencesList(places);
-//                if (mIsEnabled) mGeofencing.registerAllGeofences();
-//            }
-//        });
+
     }
 
     /***
@@ -207,9 +169,9 @@ public class MainActivity extends AppCompatActivity implements
             String placeID = place.getId();
 
             // Insert a new place into DB
-        //    ContentValues contentValues = new ContentValues();
+            //ContentValues contentValues = new ContentValues();
             //contentValues.put(PlaceContract.PlaceEntry.COLUMN_PLACE_ID, placeID);
-//            getContentResolver().insert(PlaceContract.PlaceEntry.CONTENT_URI, contentValues);
+            //getContentResolver().insert(PlaceContract.PlaceEntry.CONTENT_URI, contentValues);
 
             // Get live data information
             refreshPlacesData();
@@ -219,27 +181,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onResume() {
         super.onResume();
-
-        // Initialize location permissions checkbox
-        CheckBox locationPermissions = (CheckBox) findViewById(R.id.location_permission_checkbox);
-        if (ActivityCompat.checkSelfPermission(MainActivity.this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            locationPermissions.setChecked(false);
-        } else {
-            locationPermissions.setChecked(true);
-            locationPermissions.setEnabled(false);
-        }
-
-        // Initialize ringer permissions checkbox
-        CheckBox ringerPermissions = (CheckBox) findViewById(R.id.ringer_permissions_checkbox);
-        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        // Check if the API supports such permission change and check if permission is granted
-        if (android.os.Build.VERSION.SDK_INT >= 24 && !nm.isNotificationPolicyAccessGranted()) {
-            ringerPermissions.setChecked(false);
-        } else {
-            ringerPermissions.setChecked(true);
-            ringerPermissions.setEnabled(false);
-        }
+        Log.i("MainActivity", "onResume");
     }
 
     public void onRingerPermissionsClicked(View view) {
@@ -253,9 +195,185 @@ public class MainActivity extends AppCompatActivity implements
                 PERMISSIONS_REQUEST_FINE_LOCATION);
     }
 
-    public void broadcastIntent(View view){
+    public void broadcastIntent(View view) {
         Intent intent = new Intent();
-        intent.setAction("insideMosque"); sendBroadcast(intent);
+        intent.setAction("insideMosque");
+        sendBroadcast(intent);
     }
 
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        Log.i("MainActivity", "onPostResume");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i("MainActivity", "onStart");
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i("MainActivity", "onStop");
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("MainActivity", "onDestroy");
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i("MainActivity", "onPause");
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.i("MainActivity", "onRestart");
+
+    }
+
+
+    public void sendMosqueInfo(View view) {
+        // after checking new mosque info .. it will be sent to firebase database
+    }
+
+    public void getLocation(View view) {
+        // to add new mosque and could be used to get around mosques (view == null)
+    }
+
+    public void addMosque(View view) {
+        //view ->  text view available only if user inside mosque and app could not detect that
+        //this action open mosque info fragment
+
+    }
+
+    public void updateMosqueInfo(View view) {
+        //view ->  text view available only if user inside mosque and app could detect that
+        // this action open mosque info fragment but location listen is off
+        // only mosque name update and keeper phone number will be available
+    }
+
+    public void cacheAroundMosques(int long_, int lat) {
+        try {
+            String requestString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + long_ + "," + lat + "&radius=" + AREA_AROUND_IN_METERS + "&type=mosque&key=" +
+                    this.getPackageManager().getApplicationInfo(this.getPackageName(),
+                            PackageManager.GET_META_DATA).metaData.get("com.google.android.geo.API_KEY");
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void checkAndroidVersion() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkPermission();
+
+        } else {
+            // write your logic here
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_WIFI_STATE) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
+                /// should ask for permissions again!
+                return;
+            }else{
+                Log.i("PERMISSIONS","ALL GRANTED");
+            }
+        }
+
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.RECORD_AUDIO) + ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale
+                    (this, Manifest.permission.RECORD_AUDIO) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale
+                            (this, Manifest.permission.CAMERA)) {
+
+                Snackbar.make(this.findViewById(android.R.id.content),
+                        "Please Grant Permissions to upload profile photo",
+                        Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
+                        new View.OnClickListener() {
+                            @TargetApi(Build.VERSION_CODES.M)
+                            @Override
+                            public void onClick(View v) {
+                                requestPermissions(
+                                        new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA},
+                                        PERMISSIONS_MULTIPLE_REQUEST);
+                            }
+                        }).show();
+            } else {
+                requestPermissions(
+                        new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA},
+                        PERMISSIONS_MULTIPLE_REQUEST);
+            }
+        } else {
+            // write your logic code if permission already granted
+            Log.i("PERMISSIONS","ALL GRANTED");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        switch (requestCode) {
+            case PERMISSIONS_MULTIPLE_REQUEST:
+                if (grantResults.length > 0) {
+                    boolean RecordAudioPermission = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean CameraPermission = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                    if (RecordAudioPermission && CameraPermission) {
+                        // write your logic here
+                    } else {
+                        // <!--android:theme="@style/NoActionBar"-->
+
+                        Snackbar.make(this.findViewById(android.R.id.content),
+                                "Please Grant Permissions to be able to work",
+                                Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
+                                new View.OnClickListener() {
+                                    @TargetApi(Build.VERSION_CODES.M)
+                                    @Override
+                                    public void onClick(View v) {
+                                        requestPermissions(
+                                                new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA},
+                                                PERMISSIONS_MULTIPLE_REQUEST);
+                                    }
+                                }).show();
+                    }
+                }
+                break;
+        }
+    }
+    public void turn2Silent(){
+        try{
+            mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+        }catch (Exception e){
+            Log.e("turn2Silent",e.toString());
+            Toast.makeText(this,"couldn't turn your phone to silent!",Toast.LENGTH_LONG).show();
+        }
+    }
+    public void turn2Normal(){
+        try{
+            mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+        }catch (Exception e){
+            Log.e("turn2Normal",e.toString());
+            Toast.makeText(this,"couldn't turn your phone to normal!",Toast.LENGTH_LONG).show();
+        }
+    }
 }

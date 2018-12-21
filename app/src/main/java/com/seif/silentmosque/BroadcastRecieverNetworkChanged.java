@@ -13,6 +13,6 @@ public class BroadcastRecieverNetworkChanged extends BroadcastReceiver {
         if(intent.getCharSequenceExtra("insideUndefindMosque")=="insideUndefindMosque"){
             Log.i("Broad..:undefind","UNDEFIND");
         }
-        Toast.makeText(context,"CHECK YOUR PHONE VOL.",Toast.LENGTH_LONG).show();
+        Toast.makeText(context,"you are connected now!",Toast.LENGTH_LONG).show();
     }
 }

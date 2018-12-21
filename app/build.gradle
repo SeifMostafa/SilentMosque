@@ -30,4 +30,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:17.3.3'
     implementation 'com.google.android.gms:play-services-places:16.0.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.android.support:design:26.1.0'
+
+
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
 }

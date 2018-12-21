@@ -1,12 +1,13 @@
 package com.seif.silentmosque.provider;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
-public abstract class WifiInterface {
+import com.seif.silentmosque.model.Mosque;
+
+public abstract class PiWifiTalker {
 
     public int getWifiSignalStrength(Context context){
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);

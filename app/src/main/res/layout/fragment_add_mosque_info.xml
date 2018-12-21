@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,65 +10,86 @@
         android:id="@+id/button_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="63dp"
         android:onClick="sendMosqueInfo"
         android:text="Send"
+        tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="148dp"
-        tools:layout_editor_absoluteY="386dp"
-        tools:ignore="MissingConstraints" />
+        tools:layout_editor_absoluteY="386dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingActionButton_getlocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/editText_hintforpresslocation"
+        android:layout_marginEnd="36dp"
         android:clickable="true"
         android:onClick="getLocation"
         app:srcCompat="@android:drawable/ic_menu_mylocation"
+        tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="289dp"
-        tools:layout_editor_absoluteY="189dp"
-        tools:ignore="MissingConstraints" />
+        tools:layout_editor_absoluteY="189dp" />
 
-    <EditText
+    <TextView
         android:id="@+id/editText_hintforpresslocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="260dp"
+        android:layout_height="36dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/editText_keeperphone"
+        android:layout_marginTop="211dp"
+        android:editable="false"
         android:ems="10"
         android:inputType="text"
         android:text="press it  to get location"
+        android:textSize="24sp"
+        tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="50dp"
-        tools:layout_editor_absoluteY="189dp"
-        tools:ignore="MissingConstraints" />
+        tools:layout_editor_absoluteY="189dp" />
 
     <EditText
         android:id="@+id/editText_keeperphone"
-        android:layout_width="0dp"
+        android:layout_width="348dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="133dp"
         android:ems="10"
         android:hint="type mosque keeper phone Num."
         android:inputType="phone"
+        tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="50dp"
-        tools:layout_editor_absoluteY="114dp"
-        tools:ignore="MissingConstraints" />
+        tools:layout_editor_absoluteY="114dp" />
 
     <EditText
         android:id="@+id/editText_name"
-        android:layout_width="0dp"
+        android:layout_width="348dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="73dp"
         android:ems="10"
         android:hint="type mosque name"
         android:inputType="textPersonName"
+        tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="50dp"
-        tools:layout_editor_absoluteY="50dp"
-        tools:ignore="MissingConstraints" />
+        tools:layout_editor_absoluteY="50dp" />
 
     <EditText
         android:id="@+id/editText_loc_boundaries"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="341dp"
+        android:layout_height="116dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="124dp"
         android:ems="10"
         android:inputType="textMultiLine"
+        android:textSize="18sp"
         android:visibility="invisible"
+        tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="50dp"
-        tools:layout_editor_absoluteY="253dp"
-        tools:ignore="MissingConstraints" />
+        tools:layout_editor_absoluteY="253dp" />
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

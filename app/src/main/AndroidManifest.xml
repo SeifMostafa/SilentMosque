@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-
+    <supports-screens android:anyDensity="true" android:largeScreens="true" android:normalScreens="true" android:resizeable="true" android:smallScreens="true"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -30,8 +30,8 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCx4XVmrJfIB0E1zyqkDTh2NXn2hW6Hb0M" />
-        <receiver android:name=".GeofenceBroadcastReceiver" />
-        <receiver android:name=".BroadcastRecieverNetworkChanged">
+        <receiver android:name=".broadcastReciever.GeofenceBroadcastReceiver" />
+        <receiver android:name=".broadcastReciever.BroadcastRecieverNetworkChanged">
             <intent-filter>
 
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />

@@ -39,18 +39,10 @@ public class MainActivity extends AppCompatActivity implements
     private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 111;
     private static final int PLACE_PICKER_REQUEST = 1;
     private static final int AREA_AROUND_IN_METERS = 5000;
-    private static final long LOCATION_REFRESH_TIME = 5000;
-    private static final float LOCATION_REFRESH_DISTANCE = 5.0f;
+
     private static final int PERMISSIONS_MULTIPLE_REQUEST = 12;
-    private final LocationListener mLocationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(final Location location) {
-            //your code here
-            Log.i("mLocLsnr:onLocChanged", location.getLongitude() + "," + location.getLatitude());
-        }
-    };
-    LocationManager mLocationManager;
-    AudioManager mAudioManager;
+
+
 
     private GoogleApiClient mClient;
 
@@ -74,13 +66,8 @@ public class MainActivity extends AppCompatActivity implements
                 .addApi(Places.GEO_DATA_API)
                 .enableAutoManage(this, this)
                 .build();
-        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
 
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
-                LOCATION_REFRESH_DISTANCE, (android.location.LocationListener) mLocationListener);
-
-        mAudioManager= (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
 
         //  mGeofencing = new Geofencing(this, mClient);
 
@@ -264,14 +251,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void cacheAroundMosques(int long_, int lat) {
-        try {
-            String requestString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + long_ + "," + lat + "&radius=" + AREA_AROUND_IN_METERS + "&type=mosque&key=" +
-                    this.getPackageManager().getApplicationInfo(this.getPackageName(),
-                            PackageManager.GET_META_DATA).metaData.get("com.google.android.geo.API_KEY");
 
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     private void checkAndroidVersion() {
@@ -360,20 +340,5 @@ public class MainActivity extends AppCompatActivity implements
                 break;
         }
     }
-    public void turn2Silent(){
-        try{
-            mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-        }catch (Exception e){
-            Log.e("turn2Silent",e.toString());
-            Toast.makeText(this,"couldn't turn your phone to silent!",Toast.LENGTH_LONG).show();
-        }
-    }
-    public void turn2Normal(){
-        try{
-            mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-        }catch (Exception e){
-            Log.e("turn2Normal",e.toString());
-            Toast.makeText(this,"couldn't turn your phone to normal!",Toast.LENGTH_LONG).show();
-        }
-    }
+
 }

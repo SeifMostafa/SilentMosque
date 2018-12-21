@@ -1,4 +1,4 @@
-package com.seif.silentmosque;
+package com.seif.silentmosque.provider;
 
 
 import android.app.PendingIntent;
@@ -15,6 +15,7 @@ import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
+import com.seif.silentmosque.broadcastReciever.GeofenceBroadcastReceiver;
 
 import java.util.ArrayList;
 import java.util.List;

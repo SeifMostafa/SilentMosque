@@ -1,4 +1,4 @@
-package com.seif.silentmosque.provider;
+package com.seif.silentmosque.model;
 
 public class Mosque {
     private int long_, lat;

@@ -11,7 +11,7 @@ public abstract class PiWifiTalker {
 
     public int getWifiSignalStrength(Context context){
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        int numberOfLevels = 5;
+        int numberOfLevels = 10;
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         int level = WifiManager.calculateSignalLevel(wifiInfo.getRssi(), numberOfLevels);
         if(level!=0){

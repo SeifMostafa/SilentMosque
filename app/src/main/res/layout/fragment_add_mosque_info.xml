@@ -40,16 +40,17 @@
 
     <TextView
         android:id="@+id/editText_hintforpresslocation"
-        android:layout_width="260dp"
-        android:layout_height="36dp"
-        android:layout_alignParentTop="true"
+        android:layout_width="278dp"
+        android:layout_height="66dp"
+        android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/editText_keeperphone"
-        android:layout_marginTop="211dp"
+        android:layout_marginBottom="208dp"
         android:editable="false"
         android:ems="10"
-        android:inputType="text"
+        android:inputType="textMultiLine"
+        android:isScrollContainer="true"
         android:text="press it  to get location"
-        android:textSize="24sp"
+        android:textSize="18sp"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="50dp"
         tools:layout_editor_absoluteY="189dp" />
@@ -83,19 +84,15 @@
         tools:layout_editor_absoluteY="50dp" />
 
     <EditText
-        android:id="@+id/editText_loc_boundaries"
-        android:layout_width="350dp"
-        android:layout_height="153dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="158dp"
-        android:layout_marginStart="21dp"
+        android:id="@+id/editText_radius"
+        android:layout_width="347dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="232dp"
         android:ems="10"
-        android:inputType="textMultiLine"
-        android:textSize="18sp"
-        android:visibility="invisible"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="50dp"
-        tools:layout_editor_absoluteY="253dp" />
+        android:hint="mosque radius"
+        android:inputType="number" />
+
 
 </RelativeLayout>

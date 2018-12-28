@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "221437867573-8ec5vbfuj37hvsv6i22h7nj1a1bv8q7a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.seif.silentmosque",
+            "certificate_hash": "a5ece17c16d2ed9de011634436886d5de1289838"
+          }
+        },
+        {
           "client_id": "221437867573-llr9ajp6i8q5ifbuctsmvi1frgoib7vm.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "221437867573-llr9ajp6i8q5ifbuctsmvi1frgoib7vm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
